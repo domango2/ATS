@@ -1,0 +1,15 @@
+D:\cods\cslab4\ATC\ATC\obj\Debug\net6.0\ATC.csproj.AssemblyReference.cache
+D:\cods\cslab4\ATC\ATC\obj\Debug\net6.0\ATC.GeneratedMSBuildEditorConfig.editorconfig
+D:\cods\cslab4\ATC\ATC\obj\Debug\net6.0\ATC.AssemblyInfoInputs.cache
+D:\cods\cslab4\ATC\ATC\obj\Debug\net6.0\ATC.AssemblyInfo.cs
+D:\cods\cslab4\ATC\ATC\obj\Debug\net6.0\ATC.csproj.CoreCompileInputs.cache
+D:\cods\cslab4\ATC\ATC\bin\Debug\net6.0\ATC.exe
+D:\cods\cslab4\ATC\ATC\bin\Debug\net6.0\ATC.deps.json
+D:\cods\cslab4\ATC\ATC\bin\Debug\net6.0\ATC.runtimeconfig.json
+D:\cods\cslab4\ATC\ATC\bin\Debug\net6.0\ATC.dll
+D:\cods\cslab4\ATC\ATC\bin\Debug\net6.0\ATC.pdb
+D:\cods\cslab4\ATC\ATC\obj\Debug\net6.0\ATC.dll
+D:\cods\cslab4\ATC\ATC\obj\Debug\net6.0\refint\ATC.dll
+D:\cods\cslab4\ATC\ATC\obj\Debug\net6.0\ATC.pdb
+D:\cods\cslab4\ATC\ATC\obj\Debug\net6.0\ATC.genruntimeconfig.cache
+D:\cods\cslab4\ATC\ATC\obj\Debug\net6.0\ref\ATC.dll
