@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\cods\\cslab4\\ATC\\ATC\\ATC.csproj": {}
+    "D:\\cods\\smartgit\\ATS\\ATC.csproj": {}
   },
   "projects": {
-    "D:\\cods\\cslab4\\ATC\\ATC\\ATC.csproj": {
+    "D:\\cods\\smartgit\\ATS\\ATC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\cods\\cslab4\\ATC\\ATC\\ATC.csproj",
+        "projectUniqueName": "D:\\cods\\smartgit\\ATS\\ATC.csproj",
         "projectName": "ATC",
-        "projectPath": "D:\\cods\\cslab4\\ATC\\ATC\\ATC.csproj",
+        "projectPath": "D:\\cods\\smartgit\\ATS\\ATC.csproj",
         "packagesPath": "C:\\Users\\dimad\\.nuget\\packages\\",
-        "outputPath": "D:\\cods\\cslab4\\ATC\\ATC\\obj\\",
+        "outputPath": "D:\\cods\\smartgit\\ATS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
