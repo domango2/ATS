@@ -77,7 +77,9 @@ namespace ATC
 
         public static void GetInfo(Client client)
         {
-            Console.Write($"Идентификатор клиента {client._clientId}\nИмя клиента {client._name }\nАдрес клиента {client._address }\nТелефонный номер клиента {client._phoneNumber }\nЗадолженность клиента {client._debtAmount } ");
+            Console.Write($"Идентификатор клиента {client._clientId}\nИмя клиента {client._name }" +
+                $"\nАдрес клиента {client._address }\nТелефонный номер клиента {client._phoneNumber }" +
+                $"\nЗадолженность клиента {client._debtAmount } ");
         }
     }
 
