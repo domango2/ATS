@@ -4,76 +4,70 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ATC
+namespace ATS
 {
     public class Invoice
     {
-        // Поля
-        private int _invoiceId;         // Идентификатор счета
-        private DateTime _issuedDate;   // Дата выставления счета
-        private DateTime _dueDate;      // Дата платежа
-        private decimal _amount;        // Сумма счета
-        private decimal _penalty;       // Пеня
+        public DateTime InvoiceDate { get; set; } // Дата выставления счета
+        public DateTime DueDate { get; set; } // Дата, до которой необходимо оплатить счет
+        public decimal Amount { get; set; } 
+        public bool IsPaid { get; set; } 
+        public decimal PaidAmount { get; set; } 
+        public string ClientId { get; set; } 
 
-        // Свойства
-        public int InvoiceId
+        public Invoice(DateTime invoiceDate, DateTime dueDate, decimal amount, string clientId)
         {
-            get { return _invoiceId; }
-            set { _invoiceId = value; }
-        }
+            InvoiceDate = invoiceDate;
+            DueDate = dueDate;
+            Amount = amount;
+            ClientId = clientId;
+            IsPaid = false;
+            PaidAmount = 0;
 
-        public DateTime IssuedDate
-        {
-            get { return _issuedDate; }
-            set { _issuedDate = value; }
-        }
 
-        public DateTime DueDate
-        {
-            get { return _dueDate; }
-            set { _dueDate = value; }
-        }
+            Client existingClient = ATScompany.Instance.FindClientById(ClientId);
 
-        public decimal Amount
-        {
-            get { return _amount; }
-            set { _amount = value; }
-        }
-
-        public decimal Penalty
-        {
-            get { return _penalty; }
-            set { _penalty = value; }
-        }
-
-        public Client Client { get; set; } // Связь с клиентом, которому выставлен счет
-
-        // Конструктор для создания объекта счета
-        public Invoice(int invoiceId, DateTime issuedDate, DateTime dueDate, decimal amount)
-        {
-            _invoiceId = invoiceId;
-            _issuedDate = issuedDate;
-            _dueDate = dueDate;
-            _amount = amount;
-            _penalty = 0; // Изначально пеня равна нулю
-        }
-
-        // Метод для рассчета пени за просрочку платежа
-        public decimal CalculatePenalty()
-        {
-            if (DateTime.Now > _dueDate)
+            if (existingClient != null)
             {
-                // Рассчитываем пени как 1% от суммы за каждый день просрочки
-                decimal daysLate = (decimal)(DateTime.Now - _dueDate).TotalDays;
-                _penalty = _amount * (0.01m * daysLate);
+                if (existingClient.Overpayment > 0)
+                {
+                    decimal remainingPayment = amount - existingClient.Overpayment;
+                    if (remainingPayment <= 0)
+                    {
+                        IsPaid = true;
+                        PaidAmount = amount;
+                        existingClient.Overpayment -= amount;
+                    }
+                    else
+                    {
+                        IsPaid = false;
+                        PaidAmount = 0;
+                    }
+                }
             }
             else
             {
-                _penalty = 0; // Нет просрочки, пеня равна нулю
+                Console.WriteLine("Клиент с указанным идентификатором не найден");
             }
+        }
 
-            return _penalty;
+        public override string ToString()
+        {
+            return $"Счет от {InvoiceDate:dd.MM.yyyy} на сумму {Amount:C} {(IsPaid ? "оплачен" : "не оплачен")}";
+        }
+
+        public static decimal CalculateLateFee(List<Invoice> Invoices)
+        {
+            decimal lateFee = 0;
+            foreach (Invoice invoice in Invoices)
+            {
+                if (!invoice.IsPaid && DateTime.Now > invoice.DueDate)
+                {
+                    TimeSpan overdueDays = DateTime.Now - invoice.DueDate;
+                    lateFee += invoice.Amount * (decimal)(overdueDays.TotalDays * 0.01);
+                }
+            }
+            return lateFee;
         }
     }
-
 }

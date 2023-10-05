@@ -1,0 +1,15 @@
+D:\cods\smartgit\ATS\bin\Debug\net6.0\ATC.deps.json
+D:\cods\smartgit\ATS\bin\Debug\net6.0\ATC.dll
+D:\cods\smartgit\ATS\bin\Debug\net6.0\ATC.pdb
+D:\cods\smartgit\ATS\obj\Debug\net6.0\ATC.csproj.AssemblyReference.cache
+D:\cods\smartgit\ATS\obj\Debug\net6.0\ATC.GeneratedMSBuildEditorConfig.editorconfig
+D:\cods\smartgit\ATS\obj\Debug\net6.0\ATC.AssemblyInfoInputs.cache
+D:\cods\smartgit\ATS\obj\Debug\net6.0\ATC.AssemblyInfo.cs
+D:\cods\smartgit\ATS\obj\Debug\net6.0\ATC.csproj.CoreCompileInputs.cache
+D:\cods\smartgit\ATS\obj\Debug\net6.0\ATC.dll
+D:\cods\smartgit\ATS\obj\Debug\net6.0\refint\ATC.dll
+D:\cods\smartgit\ATS\obj\Debug\net6.0\ATC.pdb
+D:\cods\smartgit\ATS\obj\Debug\net6.0\ref\ATC.dll
+D:\cods\smartgit\ATS\bin\Debug\net6.0\ATC.exe
+D:\cods\smartgit\ATS\bin\Debug\net6.0\ATC.runtimeconfig.json
+D:\cods\smartgit\ATS\obj\Debug\net6.0\ATC.genruntimeconfig.cache

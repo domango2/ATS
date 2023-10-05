@@ -1,65 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ATC
+namespace ATS
 {
     public class Call
     {
-        // Поля
-        private int _callId;            // Идентификатор разговора
-        private DateTime _startTime;    // Дата и время начала разговора
-        private TimeSpan _duration;     // Длительность разговора
-        private decimal _ratePerMinute; // Тариф за минуту разговора
+        public DateTime CallDate { get; set; } 
+        public int Duration { get; set; } 
+        public bool IsIncoming { get; set; } 
+        public string ClientId { get; set; } 
+        public decimal Cost { get; set; } 
 
-        // Свойства
-        public int CallId
+        public Call(DateTime callDate, int duration, bool isIncoming, string clientId)
         {
-            get { return _callId; }
-            set { _callId = value; }
+            CallDate = callDate;
+            Duration = duration;
+            IsIncoming = isIncoming;
+            ClientId = clientId;
+
+            Cost = CalculateCallCost();
         }
 
-        public DateTime StartTime
+
+        private decimal CalculateCallCost()
         {
-            get { return _startTime; }
-            set { _startTime = value; }
+            if (!IsIncoming)
+            {
+                double minutes = (double)Duration / 60.0; 
+                decimal cost = (decimal)(minutes * 0.10); 
+                return cost;
+            }
+            else
+            {
+                return 0.0m;
+            }
         }
 
-        public TimeSpan Duration
+
+        public override string ToString()
         {
-            get { return _duration; }
-            set { _duration = value; }
-        }
-
-        public decimal RatePerMinute
-        {
-            get { return _ratePerMinute; }
-            set { _ratePerMinute = value; }
-        }
-
-        private List<Call> _callHistory = new List<Call>();
-
-
-        public Client Client { get; set; } // Связь с клиентом, осуществившим разговор
-
-        // Конструктор для создания объекта разговора
-        public Call(int callId, DateTime startTime, TimeSpan duration, decimal ratePerMinute)
-        {
-            _callId = callId;
-            _startTime = startTime;
-            _duration = duration;
-            _ratePerMinute = ratePerMinute;
-        }
-
-        // Метод для рассчета стоимости разговора
-        public decimal CalculateCost()
-        {
-            // Рассчитываем стоимость разговора на основе длительности и тарифа
-            decimal cost = _ratePerMinute * (decimal)_duration.TotalMinutes;
-            return cost;
+            string callType = IsIncoming ? "входящий" : "исходящий";
+            return $"{CallDate:dd.MM.yyyy HH:mm:ss} - {callType} звонок для клиента {ATScompany.Instance.FindClientById(ClientId).Name}. " +
+                $"\nПродолжительность: {Duration} сек. Стоимость: {Cost:C}";
         }
     }
-
 }
