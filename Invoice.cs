@@ -2,19 +2,52 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ATS
 {
     public class Invoice
     {
+        bool isPaid;
+
         public DateTime InvoiceDate { get; set; } // Дата выставления счета
         public DateTime DueDate { get; set; } // Дата, до которой необходимо оплатить счет
         public decimal Amount { get; set; } 
-        public bool IsPaid { get; set; } 
+        public bool IsPaid 
+        { 
+            get { return (Amount - PaidAmount == 0); }
+            set { isPaid = value; }
+        } 
         public decimal PaidAmount { get; set; } 
-        public string ClientId { get; set; } 
+        public string ClientId { get; set; }
 
+        [JsonConstructor]
+        public Invoice(DateTime invoiceDate, DateTime dueDate, decimal amount, decimal paidAmount, bool isPaid, string clientId)
+        {
+            InvoiceDate = invoiceDate;
+            DueDate = dueDate;
+            Amount = amount;
+            PaidAmount = paidAmount;
+            IsPaid = isPaid;
+            ClientId = clientId;
+
+            if (!IsDuplicateInvoice(this))
+            {
+                ATScompany.Instance.AddInvoice(this);
+            }
+        }
+        private bool IsDuplicateInvoice(Invoice newCall)
+        {
+            foreach (var existingInvoice in ATScompany.Instance.Invoices)
+            {
+                if (existingInvoice.ClientId == this.ClientId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public Invoice(DateTime invoiceDate, DateTime dueDate, decimal amount, string clientId)
         {
             InvoiceDate = invoiceDate;
@@ -53,7 +86,7 @@ namespace ATS
 
         public override string ToString()
         {
-            return $"Счет от {InvoiceDate:dd.MM.yyyy} на сумму {Amount:C} {(IsPaid ? "оплачен" : "не оплачен")}";
+            return $"Счет клиента {ClientId} от {InvoiceDate:dd.MM.yyyy} на сумму {(Amount - PaidAmount):C} {(IsPaid ? "оплачен" : "не оплачен")}";
         }
 
         public static decimal CalculateLateFee(List<Invoice> Invoices)

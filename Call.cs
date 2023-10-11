@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace ATS
 {
@@ -8,8 +9,39 @@ namespace ATS
         public int Duration { get; set; } 
         public bool IsIncoming { get; set; } 
         public string ClientId { get; set; } 
-        public decimal Cost { get; set; } 
+        public decimal Cost { get; set; }
 
+        [JsonConstructor]
+        public Call(DateTime callDate, int duration, bool isIncoming, string clientId, decimal cost) 
+        {
+            CallDate = callDate;
+            Duration = duration;
+            IsIncoming = isIncoming;
+            ClientId = clientId;
+            Cost = cost;
+            if (!IsDuplicateCall(this))
+            {
+                ATScompany.Instance.Calls.Add(this);
+            }
+        }
+
+        private bool IsDuplicateCall(Call newCall)
+        {
+            // Пройдитесь по списку существующих звонков и проверьте, есть ли уже такой звонок
+            foreach (var existingCall in ATScompany.Instance.Calls)
+            {
+                if (existingCall.CallDate == newCall.CallDate
+                    && existingCall.Duration == newCall.Duration
+                    && existingCall.ClientId == newCall.ClientId)
+                {
+                    // Если такой звонок уже существует, верните true, чтобы избежать его добавления
+                    return true;
+                }
+            }
+
+            // Если не найдено дублирующих звонков, верните false
+            return false;
+        }
         public Call(DateTime callDate, int duration, bool isIncoming, string clientId)
         {
             CallDate = callDate;

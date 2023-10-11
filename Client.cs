@@ -4,20 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ATS
 {
     public class Client
     {
-        // Поля
         private string id = "";       
         private string name = "";         
-        private string address = "";      
+        private string address = "";
         private string phoneNumber = "";
         private DateTime birthDate;
         private decimal debt = 0;
         private decimal overpayment = 0;
+
+        private bool isNew = true;
 
         public List<Call> CallHistory { get; set; }   
         public List<Invoice> Invoices { get; set; }
@@ -58,7 +60,7 @@ namespace ATS
                 decimal overdueInterestDebt = Invoice.CalculateLateFee(Invoices);
                 return unpaidInvoicesDebt + overdueInterestDebt;
             }
-            private set { debt = Debt; }
+            set { debt = value; }
         }
 
         public decimal Overpayment
@@ -67,9 +69,38 @@ namespace ATS
             set { overpayment = value; }
         }
 
+        public bool IsNew
+        {
+            get { return isNew; }
+            private set { }
+        }
+
+        [JsonConstructor]
+        public Client(string id, string name, string address, string phoneNumber, DateTime birthDate, decimal debt, decimal overpayment, bool isNew, List<Call> callHistory, List<Invoice> invoices, DateTime lastInvoiceDate){
+            Id = id;
+            Name = name;
+            Address = address;
+            PhoneNumber = phoneNumber;
+            BirthDate = birthDate;
+            Debt = debt;
+            Overpayment = overpayment;
+            IsNew = isNew;
+            CallHistory = callHistory;
+            Invoices = invoices;
+            LastInvoiceDate = lastInvoiceDate;
+            ATScompany.Instance.AddClient(this);
+
+        }
+
         public Client(string name, string address, DateTime birthDate)
         {
-            Id = GenerateUniqueClientId();
+            if (isNew)
+            {
+                Id = GenerateUniqueClientId();
+                PhoneNumber = GeneratePhoneNumber(int.Parse(Id));
+                LastInvoiceDate = DateTime.Today.AddDays(-1);
+                isNew = false;
+            }
 
             Name = name;
             Address = address;
@@ -77,9 +108,7 @@ namespace ATS
 
             CallHistory = new List<Call>();
             Invoices = new List<Invoice>();
-
-            PhoneNumber = GeneratePhoneNumber(int.Parse(Id));
-            LastInvoiceDate = DateTime.Today.AddDays(-1);
+            
         }
 
         private string GenerateUniqueClientId()
@@ -109,7 +138,7 @@ namespace ATS
 
         private string GeneratePhoneNumber(int clientId)
         {
-            return $"8-0152-{clientId:D6}"; // Пример генерации номера
+            return $"8-0152-{clientId:D6}"; 
         }
 
         public override string ToString()
@@ -156,14 +185,14 @@ namespace ATS
 
             if (unpaidInvoicesExist || overdueInterestExists)
             {
-                Console.WriteLine("У вас есть финансовые обязательства:");
+                Console.WriteLine("\nУ вас есть финансовые обязательства:");
 
                 if (unpaidInvoicesExist)
                 {
                     Console.WriteLine("Неоплаченные счета:");
                     foreach (var unpaidInvoice in Invoices.Where(i => !i.IsPaid))
                     {
-                        Console.WriteLine($"- Счет за {unpaidInvoice.InvoiceDate}, Сумма: {unpaidInvoice.Amount:C}");
+                        Console.WriteLine($"- Счет за {unpaidInvoice.InvoiceDate}, Сумма: {(unpaidInvoice.Amount - unpaidInvoice.PaidAmount):C}");
                     }
                 }
 
@@ -227,7 +256,7 @@ namespace ATS
                         Console.WriteLine($"Оставшаяся задолженность: {Debt}");
                     }
                 }
-                Console.WriteLine("Операция выполнена.");
+                Console.WriteLine($"\nОплата в размере {payment} принята.");
             }
             else
             {
