@@ -35,6 +35,8 @@ namespace ATS
             if (!IsDuplicateInvoice(this))
             {
                 ATScompany.Instance.AddInvoice(this);
+                Client existingClient = ATScompany.Instance.FindClientById(ClientId)!;
+                existingClient.Invoices.Add(this);
             }
         }
         private bool IsDuplicateInvoice(Invoice newCall)
@@ -58,7 +60,7 @@ namespace ATS
             PaidAmount = 0;
 
 
-            Client existingClient = ATScompany.Instance.FindClientById(ClientId);
+            Client? existingClient = ATScompany.Instance.FindClientById(ClientId);
 
             if (existingClient != null)
             {

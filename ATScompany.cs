@@ -98,7 +98,7 @@ namespace ATS
             }
         }
 
-        public Client FindClientById(string clientId)
+        public Client? FindClientById(string clientId)
         {
             return Clients.FirstOrDefault(client => client.Id == clientId);
         }
@@ -109,9 +109,12 @@ namespace ATS
             string dataCalls = "dataCalls.json";
             string dataInvoices = "dataInvoices.json";
 
-            var jsonClients = JsonSerializer.Serialize(Clients);
-            var jsonCalls = JsonSerializer.Serialize(Calls);
-            var jsonInvoices = JsonSerializer.Serialize(Invoices);
+            JsonSerializerOptions options = new JsonSerializerOptions();
+            options.WriteIndented = true;
+
+            var jsonClients = JsonSerializer.Serialize(Clients , options);
+            var jsonCalls = JsonSerializer.Serialize(Calls, options);
+            var jsonInvoices = JsonSerializer.Serialize(Invoices, options);
 
             File.WriteAllText(dataClients, jsonClients);
             File.WriteAllText(dataCalls, jsonCalls);
@@ -120,9 +123,7 @@ namespace ATS
             Console.WriteLine("\nДанные сохранены.");
         }
 
-        // Метод для загрузки данных из JSON файла
-        // Метод для загрузки данных из JSON файла
-        // Метод для загрузки данных из JSON файла
+
         public void LoadAll()
         {
             string dataClients = "dataClients.json";
@@ -135,45 +136,16 @@ namespace ATS
                 var deserializedClients = JsonSerializer.Deserialize<List<Client>>(jsonClients);
                 if (deserializedClients != null)
                 {
-                    // Здесь вы можете установить список клиентов.
-                    
-
                     if (File.Exists(dataCalls))
                     {
                         var jsonCalls = File.ReadAllText(dataCalls);
                         var deserializedCalls = JsonSerializer.Deserialize<List<Call>>(jsonCalls);
-                        if (deserializedCalls != null)
-                        {
-                            // Здесь вы можете установить список звонков.
-                            foreach (var call in deserializedCalls)
-                            {
-                                // Находим клиента по идентификатору и связываем звонок с клиентом.
-                                var client = FindClientById(call.ClientId);
-                                if (client != null)
-                                {
-                                    client.CallHistory.Add(call);
-                                }
-                            }
-                        }
                     }
 
                     if (File.Exists(dataInvoices))
                     {
                         var jsonInvoices = File.ReadAllText(dataInvoices);
                         var deserializedInvoices = JsonSerializer.Deserialize<List<Invoice>>(jsonInvoices);
-                        if (deserializedInvoices != null)
-                        {
-                            // Здесь вы можете установить список счетов.
-                            foreach (var invoice in deserializedInvoices)
-                            {
-                                // Находим клиента по идентификатору и связываем счет с клиентом.
-                                var client = FindClientById(invoice.ClientId);
-                                if (client != null)
-                                {
-                                    client.Invoices.Add(invoice);
-                                }
-                            }
-                        }
                     }
                 }
             }

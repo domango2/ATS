@@ -21,25 +21,24 @@ namespace ATS
             Cost = cost;
             if (!IsDuplicateCall(this))
             {
-                ATScompany.Instance.Calls.Add(this);
+                ATScompany.Instance.AddCall(this);
+                Client existingClient = ATScompany.Instance.FindClientById(ClientId)!;
+                existingClient.CallHistory.Add(this);
             }
         }
 
         private bool IsDuplicateCall(Call newCall)
         {
-            // Пройдитесь по списку существующих звонков и проверьте, есть ли уже такой звонок
             foreach (var existingCall in ATScompany.Instance.Calls)
             {
                 if (existingCall.CallDate == newCall.CallDate
                     && existingCall.Duration == newCall.Duration
                     && existingCall.ClientId == newCall.ClientId)
                 {
-                    // Если такой звонок уже существует, верните true, чтобы избежать его добавления
                     return true;
                 }
             }
 
-            // Если не найдено дублирующих звонков, верните false
             return false;
         }
         public Call(DateTime callDate, int duration, bool isIncoming, string clientId)
@@ -71,7 +70,7 @@ namespace ATS
         public override string ToString()
         {
             string callType = IsIncoming ? "входящий" : "исходящий";
-            return $"{CallDate:dd.MM.yyyy HH:mm:ss} - {callType} звонок для клиента {ATScompany.Instance.FindClientById(ClientId).Name}. " +
+            return $"{CallDate:dd.MM.yyyy HH:mm:ss} - {callType} звонок для клиента {ATScompany.Instance.FindClientById(ClientId)!.Name}. " +
                 $"\nПродолжительность: {Duration} сек. Стоимость: {Cost:C}";
         }
     }

@@ -14,14 +14,14 @@ namespace ATS
         private string id = "";       
         private string name = "";         
         private string address = "";
-        private string phoneNumber = "";
         private DateTime birthDate;
         private decimal debt = 0;
         private decimal overpayment = 0;
 
-        private bool isNew = true;
+        [JsonIgnore]
+        public List<Call> CallHistory { get; set; }
 
-        public List<Call> CallHistory { get; set; }   
+        [JsonIgnore]
         public List<Invoice> Invoices { get; set; }
         public string PhoneNumber { get; private set; } 
         public static int NextClientId { get; private set; } = 1;
@@ -69,14 +69,10 @@ namespace ATS
             set { overpayment = value; }
         }
 
-        public bool IsNew
-        {
-            get { return isNew; }
-            private set { }
-        }
 
         [JsonConstructor]
-        public Client(string id, string name, string address, string phoneNumber, DateTime birthDate, decimal debt, decimal overpayment, bool isNew, List<Call> callHistory, List<Invoice> invoices, DateTime lastInvoiceDate){
+        public Client(string id, string name, string address, string phoneNumber, DateTime birthDate, decimal debt, 
+            decimal overpayment, DateTime lastInvoiceDate){
             Id = id;
             Name = name;
             Address = address;
@@ -84,9 +80,8 @@ namespace ATS
             BirthDate = birthDate;
             Debt = debt;
             Overpayment = overpayment;
-            IsNew = isNew;
-            CallHistory = callHistory;
-            Invoices = invoices;
+            CallHistory = new List<Call>(); 
+            Invoices = new List<Invoice>(); 
             LastInvoiceDate = lastInvoiceDate;
             ATScompany.Instance.AddClient(this);
 
@@ -94,13 +89,9 @@ namespace ATS
 
         public Client(string name, string address, DateTime birthDate)
         {
-            if (isNew)
-            {
-                Id = GenerateUniqueClientId();
-                PhoneNumber = GeneratePhoneNumber(int.Parse(Id));
-                LastInvoiceDate = DateTime.Today.AddDays(-1);
-                isNew = false;
-            }
+            Id = GenerateUniqueClientId();
+            PhoneNumber = GeneratePhoneNumber(int.Parse(Id));
+            LastInvoiceDate = DateTime.Today.AddDays(-1);
 
             Name = name;
             Address = address;
@@ -151,12 +142,12 @@ namespace ATS
             Call call = new Call(callDate, duration, isIncoming, clientId);
 
             CallHistory.Add(call);
-            ATScompany.Instance.Calls.Add(call);
+            ATScompany.Instance.AddCall(call);
         }
 
         public void PrintClientInfo()
         {
-            Console.WriteLine($"Имя: {Name}");
+            Console.WriteLine($"\nИмя: {Name}");
             Console.WriteLine($"Адрес: {Address}");
             Console.WriteLine($"Дата рождения: {BirthDate.ToShortDateString()}");
             Console.WriteLine($"Номер телефона: {PhoneNumber}");
