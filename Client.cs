@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 
 namespace ATS
 {
-    public class Client
+    public class Client 
     {
+        private string login = "";
+        private string password = "";
         private string id = "";       
         private string name = "";         
         private string address = "";
@@ -27,7 +29,8 @@ namespace ATS
         public static int NextClientId { get; private set; } = 1;
         public DateTime LastInvoiceDate { get; set; }
 
-
+        public string Login { get;private set; }
+        public string Password { get;private set; }
         public string Id
         {
             get { return id; }
@@ -71,8 +74,10 @@ namespace ATS
 
 
         [JsonConstructor]
-        public Client(string id, string name, string address, string phoneNumber, DateTime birthDate, decimal debt, 
+        public Client(string login, string password, string id, string name, string address, string phoneNumber, DateTime birthDate, decimal debt, 
             decimal overpayment, DateTime lastInvoiceDate){
+            Login = login;
+            Password = password;
             Id = id;
             Name = name;
             Address = address;
@@ -86,8 +91,31 @@ namespace ATS
             ATScompany.Instance.AddClient(this);
 
         }
+        public Client()
+        {
+            Id = GenerateUniqueClientId();
+            PhoneNumber = GeneratePhoneNumber(int.Parse(Id));
+            LastInvoiceDate = DateTime.Today.AddDays(-1);
 
-        public Client(string name, string address, DateTime birthDate)
+            Console.Write("Введите имя -> ");
+            Name = Console.ReadLine();
+
+            Console.Write("Введите адрес -> ");
+            Address = Console.ReadLine();
+
+            Console.Write("Введите дату рождения (гггг.мм.дд) -> ");
+            BirthDate = Convert.ToDateTime(Console.ReadLine());
+
+            Login = PhoneNumber;
+            Console.WriteLine($"Ваш номер телефона {PhoneNumber} будет использован как логин");
+            Console.Write("Придумайте пароль -> ");
+            Password = Console.ReadLine();
+
+            CallHistory = new List<Call>();
+            Invoices = new List<Invoice>();
+        }
+
+        public Client(string name, string address, DateTime birthDate, string password)
         {
             Id = GenerateUniqueClientId();
             PhoneNumber = GeneratePhoneNumber(int.Parse(Id));
@@ -96,10 +124,10 @@ namespace ATS
             Name = name;
             Address = address;
             BirthDate = birthDate;
-
+            Login = PhoneNumber;
+            Password = password;
             CallHistory = new List<Call>();
             Invoices = new List<Invoice>();
-            
         }
 
         private string GenerateUniqueClientId()
@@ -158,7 +186,8 @@ namespace ATS
             Console.WriteLine("История звонков:");
             foreach (var call in CallHistory)
             {
-                Console.WriteLine($"{call.CallDate}, Длительность: {call.Duration}");
+                string callType = call.IsIncoming ? "входящий" : "исходящий";
+                Console.WriteLine($"{call.CallDate} {callType}, Длительность: {call.Duration}");
             }
 
             Console.WriteLine("Список счетов:");

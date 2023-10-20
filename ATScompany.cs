@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -34,6 +35,7 @@ namespace ATS
         }
 
         public void AddInvoice(Invoice invoice)
+
         {
             Invoices.Add(invoice);
         }
@@ -101,6 +103,28 @@ namespace ATS
         public Client? FindClientById(string clientId)
         {
             return Clients.FirstOrDefault(client => client.Id == clientId);
+        }
+
+        public Client? FindClient(string inputLogin, string inputPassword)
+        {
+            return Clients.FirstOrDefault(client => (client.Login == inputLogin && client.Password == inputPassword));
+        }
+
+        public void Authorization()
+        {
+            Console.Write("Введите логин -> ");
+            string inputLogin = Console.ReadLine();
+            Console.Write("Введите пароль -> ");
+            string inputPassword = Console.ReadLine();
+            if (inputLogin != "admin" && inputPassword != "admin")
+            {
+                Client client1 = FindClient(inputLogin, inputPassword);
+                client1.PrintClientInfo();
+            }
+            else
+            {
+                Console.WriteLine("\nПОЛУЧЕН ДОСТУП АДМИНИСТРАТОРА");
+            }
         }
 
         public void SaveAll()
